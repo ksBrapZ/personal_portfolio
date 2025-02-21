@@ -3,6 +3,7 @@ import { BackButton } from "@/components/ui/back-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { BackgroundGraphic } from "@/components/ui/background-graphic";
 import {
   Table,
   TableBody,
@@ -50,17 +51,17 @@ const favorites = {
   books: [
     { title: "Thinking, Fast and Slow", author: "Daniel Kahneman", type: "Psychology" },
     { title: "Zero to One", author: "Peter Thiel", type: "Business" },
-    { title: "Dune", author: "Frank Herbert", type: "Science Fiction" },
+    { title: "Dune", author: "Frank Herbert", type: "Sci-Fi" },
     { title: "Sapiens", author: "Yuval Noah Harari", type: "History" },
     { title: "The Lean Startup", author: "Eric Ries", type: "Business" },
-    { title: "1984", author: "George Orwell", type: "Science Fiction" },
+    { title: "1984", author: "George Orwell", type: "Sci-Fi" },
     { title: "Deep Work", author: "Cal Newport", type: "Productivity" },
     { title: "Atomic Habits", author: "James Clear", type: "Psychology" },
     { title: "The Design of Everyday Things", author: "Don Norman", type: "Design" },
-    { title: "Snow Crash", author: "Neal Stephenson", type: "Science Fiction" },
+    { title: "Snow Crash", author: "Neal Stephenson", type: "Sci-Fi" },
     { title: "Good to Great", author: "Jim Collins", type: "Business" },
     { title: "The Power of Now", author: "Eckhart Tolle", type: "Psychology" },
-    { title: "Foundation", author: "Isaac Asimov", type: "Science Fiction" },
+    { title: "Foundation", author: "Isaac Asimov", type: "Sci-Fi" },
     { title: "Start with Why", author: "Simon Sinek", type: "Business" },
     { title: "The Pragmatic Programmer", author: "Dave Thomas", type: "Technology" },
   ],
@@ -83,7 +84,6 @@ const favorites = {
   ],
 };
 
-// Color mapping for different types
 const typeColors: Record<string, { border: string; text: string }> = {
   Development: { border: "border-blue-500", text: "text-blue-500" },
   Design: { border: "border-purple-500", text: "text-purple-500" },
@@ -93,7 +93,7 @@ const typeColors: Record<string, { border: string; text: string }> = {
   Photography: { border: "border-indigo-500", text: "text-indigo-500" },
   Psychology: { border: "border-pink-500", text: "text-pink-500" },
   Business: { border: "border-orange-500", text: "text-orange-500" },
-  "Science Fiction": { border: "border-cyan-500", text: "text-cyan-500" },
+  "Sci-Fi": { border: "border-cyan-500", text: "text-cyan-500" },
   "Thought Leader": { border: "border-emerald-500", text: "text-emerald-500" },
   Scientist: { border: "border-violet-500", text: "text-violet-500" },
   Expert: { border: "border-amber-500", text: "text-amber-500" },
@@ -111,7 +111,7 @@ const TypeBadge = ({ type }: { type: string }) => {
     <Badge
       variant="outline"
       className={cn(
-        "bg-background",
+        "bg-background whitespace-nowrap",
         colors.border,
         colors.text
       )}
@@ -124,6 +124,7 @@ const TypeBadge = ({ type }: { type: string }) => {
 export default function Favorites() {
   return (
     <div className="min-h-screen bg-background p-8">
+      <BackgroundGraphic />
       <BackButton />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
