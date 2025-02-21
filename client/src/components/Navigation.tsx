@@ -15,7 +15,7 @@ export default function Navigation() {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
+    { href: "/blog", label: "Writing" },
     { href: "/favorites", label: "Favorites" },
   ];
 
@@ -34,14 +34,14 @@ export default function Navigation() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {links.map(({ href, label }) => (
-            <DropdownMenuItem key={href}>
+            <DropdownMenuItem key={href} asChild>
               <Link href={href}>
-                <a className={cn(
-                  "w-full",
+                <span className={cn(
+                  "block w-full",
                   location === href && "font-medium"
                 )}>
                   {label}
-                </a>
+                </span>
               </Link>
             </DropdownMenuItem>
           ))}
