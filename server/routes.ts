@@ -19,8 +19,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes
   app.post("/api/admin/login", (req, res) => {
     const { username, password } = req.body;
-
-    const { username, password } = req.body;
     if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
       res.status(200).json({ message: "Login successful" });
     } else {
