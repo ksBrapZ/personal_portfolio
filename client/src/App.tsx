@@ -6,6 +6,8 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Favorites from "@/pages/Favorites";
 import Blog from "@/pages/Blog";
+import Story from "@/pages/Story";
+import { ProfileMenu } from "@/components/ProfileMenu";
 
 function Router() {
   return (
@@ -13,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/favorites" component={Favorites} />
       <Route path="/blog" component={Blog} />
+      <Route path="/story" component={Story} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -21,6 +24,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ProfileMenu />
       <Router />
       <Toaster />
     </QueryClientProvider>
