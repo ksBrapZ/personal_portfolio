@@ -16,20 +16,9 @@ const ADMIN_CREDENTIALS = {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Middleware to check for admin subdomain
-  app.use((req, res, next) => {
-    const host = req.get('host');
-    if (host?.startsWith('admin.') || req.path.startsWith('/admin')) {
-      req.isAdminDomain = true;
-    }
-    next();
-  });
-
-  // Admin routes - only accessible on admin subdomain
+  // Admin routes
   app.post("/api/admin/login", (req, res) => {
-    if (!req.isAdminDomain) {
-      return res.status(403).json({ message: "Access denied. Please use the admin subdomain." });
-    }
+    const { username, password } = req.body;
 
     const { username, password } = req.body;
     if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
