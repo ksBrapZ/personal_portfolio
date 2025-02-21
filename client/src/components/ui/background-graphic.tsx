@@ -23,7 +23,7 @@ export const BackgroundGraphic = () => {
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.4 }}
+        animate={{ opacity: 0.8 }}
         transition={{ duration: 1 }}
         className="absolute inset-0"
       >
@@ -35,7 +35,7 @@ export const BackgroundGraphic = () => {
             translateX: "-50%",
             translateY: "-50%"
           }}
-          className="absolute w-[600px] h-[600px] bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-full blur-3xl"
+          className="absolute w-[600px] h-[600px] bg-gradient-to-r from-primary/40 via-primary/20 to-transparent rounded-full blur-3xl"
         />
 
         {/* Static elements */}
