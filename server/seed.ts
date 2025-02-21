@@ -203,13 +203,11 @@ The right tools amplify our capabilities and make complex tasks manageable. Choo
 
 async function seedDatabase() {
   try {
-    // First create the admin user
+    // Create the admin user with correct schema
     const adminUser: InsertUser = {
       username: "admin",
-      name: "Site Admin",
-      email: "admin@example.com",
       password: "password", // This is just for development
-      role: "admin",
+      isAdmin: true,
     };
 
     const user = await storage.createUser(adminUser);
@@ -266,7 +264,7 @@ async function seedDatabase() {
         title: post.title,
         content: post.content,
         slug: post.slug,
-        authorId: user.id, // Use the created admin user's ID
+        authorId: user.id,
         publishedAt: post.publishedAt,
         excerpt: post.excerpt,
         featuredImage: post.featuredImage,
