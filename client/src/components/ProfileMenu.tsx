@@ -14,7 +14,7 @@ export function ProfileMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="h-10 w-10 cursor-pointer hover:opacity-80 transition-opacity">
-            <AvatarImage src="/assets/profile.jpg" className="object-cover" />
+            <AvatarImage src="https://avatars.githubusercontent.com/u/12345678" className="object-cover" />
             <AvatarFallback>K</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -27,7 +27,7 @@ export function ProfileMenu() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <a 
-              href="https://twitter.com/username" 
+              href="https://x.com/keyanasapp" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-2"
@@ -39,7 +39,7 @@ export function ProfileMenu() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <a 
-              href="https://linkedin.com/in/username" 
+              href="https://www.linkedin.com/keyanasapp" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-2"
@@ -51,7 +51,7 @@ export function ProfileMenu() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <a 
-              href="mailto:email@example.com"
+              href="mailto:keyana@getindigo.ai"
               className="flex items-center gap-2"
             >
               <Mail className="h-4 w-4" />
