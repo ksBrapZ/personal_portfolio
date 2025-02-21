@@ -69,7 +69,7 @@ export default function Story() {
             transition={{ duration: 0.5 }}
           >
             <Avatar className="h-32 w-32 mx-auto mb-6">
-              <AvatarImage src="/profile-motorcycle.jpg" className="object-cover" />
+              <AvatarImage src="attached_assets/profile_pic.png" className="object-cover" />
               <AvatarFallback>K</AvatarFallback>
             </Avatar>
           </motion.div>
