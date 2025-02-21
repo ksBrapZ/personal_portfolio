@@ -1,0 +1,125 @@
+Cloud Troubleshooting
+When Tiny Cloud detects a problem, it will show an editor notification containing information about the problem. This page describes the cause and solution for common Tiny Cloud error notifications.
+
+The wording of the notifications shown here may differ from the actual notifications from Tiny Cloud.
+Invalid API Key
+"A valid API key is required to continue using TinyMCE. Please alert the admin to check the current API key. Click here to learn more."
+Cause "No API Key"
+This notification is only shown when either:
+
+An apiKey is not provided in the script tag.
+
+no-api-key is provided as the API key.
+
+For example:
+
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+Solution
+Update the src URL to include your (website or application developer’s) Tiny Cloud API Key. Your API key should replace the string no-api-key.
+
+For example: if your API is abcd1234:
+
+<script src="https://cdn.tiny.cloud/1/abcd1234/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+To retrieve your API key, or to sign up for an API key, visit: Tiny Cloud.
+
+Visit our Invalid API key page for more information on how to fix a invalid API key with TinyMCE.
+Cause "Invalid API Key"
+This notification is shown when the API key provided cannot be found on the Tiny Cloud server.
+
+The apiKey must be:
+
+An exact length,
+
+comprised of certain characters, and
+
+created with a Tiny Cloud account on the Tiny Account page.
+
+Solution
+Check the apiKey provided in the script tag:
+
+Remove any leading or trailing spaces
+
+Remove any other characters that are not in your apiKey. If you are using variable substitution, ensure that the variable is substituting properly
+
+Ensure the apiKey matches the API key shown at https://www.tiny.cloud/my-account.
+
+Visit our Invalid API key page for more information on how to fix a invalid API key with TinyMCE.
+Domain Not Registered
+"This domain is not registered in the TinyMCE Customer Portal. Please alert the admin to add it to the approved domains to continue using TinyMCE. Click here to learn more."
+Cause
+This notification is shown when the Referer of the page does not match the list of approved domains stored against your apiKey. Tiny Cloud verifies the domain TinyMCE is loading from by checking the domain portion of the Referer header in the network request. You can view a list of your approved domains on your Tiny Account.
+
+Sometimes the domain in the Referer header does not match with the URL in the browser’s address bar. To check the Referer header:
+
+Open your browser’s Developer’s Tools.
+
+Open the Network tab.
+
+Find and select the request being made to load TinyMCE from Tiny Cloud with your API key.
+
+Click on the Headers tab.
+
+In the section called Request Headers there should be a field for Referer. This is the value that TinyMCE is checking against your approved domains. It must match one of your approved domains listed on your Tiny Account.
+
+Solution
+If the Referer is correct for the site, ensure that the domain is included in your list of approved domains on Tiny Account. If the Referer is not what you are expecting, you may need to adjust your application’s Referer header settings.
+
+Referer Heading Missing
+"We’re unable to check your domain because the referer header is missing. Please read the Guide on how to ensure your referer header is present, so we can then customize your editor experience."
+Cause
+This notification is shown if the Referer header is absent for the network request when loading TinyMCE from Tiny Cloud. Tiny Cloud verifies the domain TinyMCE is loading from by checking the domain of the Referer header in the network request.
+
+Referer headers are sometimes removed by browser settings or browser extensions. Tiny Cloud only needs the domain in the Referer header, so for improved performance and privacy Tiny recommends setting the referrerpolicy to origin when requesting Tiny Cloud resources.
+
+Solution
+Identify which browser setting or extension is responsible for blocking the Referer being sent. A common extension is Referer Control:
+
+Google Chrome
+
+Firefox
+
+Once you have identified the setting or extension, modify it to allow just the Origin of the Referer to be sent. Alternatively, disable the extension or setting for any pages using Tiny Cloud.
+
+Troubleshooting Premium Plugins
+"The _ premium plugin is not enabled on your API key. Upgrade your account."
+Cause
+This notification is shown when your API key does not have access to the premium plugin being requested. This could be the result of a trial expiring, and your TinyMCE configuration attempting to load premium plugins you can no longer access.
+
+You may also be seeing this notification if you are using the wrong API key. Ensure that you are using the API key that has the right entitlements.
+
+Solution
+Either remove the premium plugin from your TinyMCE configuration, or upgrade your subscription to provide access to that premium plugin.
+
+Visit our Invalid API key page for more information on how to fix a invalid API key with TinyMCE.
+Read-only mode - No API Key
+“TinyMCE is in read-only mode. Please alert the admin that an API key is required for continued use. Learn more
+Cause "No API Key (Read only mode)"
+This message is sent when the developer has not supplied an API key, typically because they’ve copied a getting-started script and have not completed the official signup process to get an API key.
+
+Solution
+Please alert your Admin that an API key is required for continued use. Learn more, or
+
+Sign up for a API key by visiting www.tiny.cloud/auth/signup, and
+
+Update your TinyMCE configuration.
+
+Visit our Invalid API key page for more information on how to fix a invalid API key with TinyMCE.
+Read-only mode - Invalid API Key
+“TinyMCE is in read-only mode. Please alert the admin to provide a valid API key to continue use. Learn more Your TinyMCE editor state has been set to read-only mode.”
+Cause "Invalid API Key (Read only-mode)"
+This message is shown when the API key is not correct, perhaps because of a typo.
+
+Solution
+Login to your TinyMCE account and confirm that your API key matches your unique key by visiting www.tiny.cloud/auth/login/.
+
+or to sign up for an API key, visit: Tiny Cloud.
+
+Read-only mode - Invalid Origin
+“TinyMCE is in read-only mode. Please request that the admin add this domain to the approved domains in the Customer Portal. For more information see Domain not registered”
+Cause "Invalid Origin (Read only mode)"
+This message is shown when TinyMCE is loaded from a domain that has not been added to the approved domains in our account portal.
+
+Solution
+Please request that your admin add this domain to the approved domains in the Customer Portal. For more information see Domain not registered
+
+From TinyMCE 7.6.0 onwards, the editor uses disabled mode instead of read-only mode.

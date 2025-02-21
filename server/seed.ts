@@ -1,5 +1,5 @@
 import { storage } from "./storage";
-import { type InsertFavorite, type InsertPost } from "@shared/schema";
+import { type InsertFavorite, type InsertPost, type InsertUser } from "@shared/schema";
 
 const seedData = {
   tools: [
@@ -203,6 +203,18 @@ The right tools amplify our capabilities and make complex tasks manageable. Choo
 
 async function seedDatabase() {
   try {
+    // First create the admin user
+    const adminUser: InsertUser = {
+      username: "admin",
+      name: "Site Admin",
+      email: "admin@example.com",
+      password: "password", // This is just for development
+      role: "admin",
+    };
+
+    const user = await storage.createUser(adminUser);
+    console.log("Created admin user:", user.id);
+
     // Seed tools
     for (const tool of seedData.tools) {
       const favorite: InsertFavorite = {
@@ -248,13 +260,13 @@ async function seedDatabase() {
       await storage.createFavorite(favorite);
     }
 
-    // Seed blog posts
+    // Seed blog posts with the admin user's ID
     for (const post of seedData.posts) {
       const blogPost: InsertPost = {
         title: post.title,
         content: post.content,
         slug: post.slug,
-        authorId: post.authorId,
+        authorId: user.id, // Use the created admin user's ID
         publishedAt: post.publishedAt,
         excerpt: post.excerpt,
         featuredImage: post.featuredImage,
