@@ -13,8 +13,8 @@ export function ProfileMenu() {
     <div className="fixed top-4 right-4 z-50">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="h-9 w-9 cursor-pointer hover:opacity-80 transition-opacity">
-            <AvatarImage src="https://github.com/shadcn.png" />
+          <Avatar className="h-10 w-10 cursor-pointer hover:opacity-80 transition-opacity">
+            <AvatarImage src="/assets/profile.jpg" className="object-cover" />
             <AvatarFallback>K</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -22,7 +22,7 @@ export function ProfileMenu() {
           <DropdownMenuItem asChild>
             <Link href="/story" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span>My Story</span>
+              <span>Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
