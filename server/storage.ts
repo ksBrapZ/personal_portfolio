@@ -1,6 +1,8 @@
 import { users, type User, type InsertUser } from "@shared/schema";
 import { posts, type Post, type InsertPost } from "@shared/schema";
 import { favorites, type Favorite, type InsertFavorite } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -19,76 +21,62 @@ export interface IStorage {
   createFavorite(favorite: InsertFavorite): Promise<Favorite>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private posts: Map<number, Post>;
-  private favorites: Map<number, Favorite>;
-  private currentId: { users: number; posts: number; favorites: number };
-
-  constructor() {
-    this.users = new Map();
-    this.posts = new Map();
-    this.favorites = new Map();
-    this.currentId = {
-      users: 1,
-      posts: 1,
-      favorites: 1,
-    };
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId.users++;
-    const user: User = { ...insertUser, id, isAdmin: false };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   // Blog post methods
   async getAllPosts(): Promise<Post[]> {
-    return Array.from(this.posts.values());
+    return await db.select().from(posts);
   }
 
   async getPostBySlug(slug: string): Promise<Post | undefined> {
-    return Array.from(this.posts.values()).find(
-      (post) => post.slug === slug
-    );
+    const [post] = await db.select().from(posts).where(eq(posts.slug, slug));
+    return post;
   }
 
   async createPost(insertPost: InsertPost): Promise<Post> {
-    const id = this.currentId.posts++;
-    const post: Post = { ...insertPost, id };
-    this.posts.set(id, post);
+    const now = new Date().toISOString();
+    const [post] = await db
+      .insert(posts)
+      .values({ ...insertPost, createdAt: now })
+      .returning();
     return post;
   }
 
   // Favorites methods
   async getAllFavorites(): Promise<Favorite[]> {
-    return Array.from(this.favorites.values());
+    return await db.select().from(favorites);
   }
 
   async getFavoritesByCategory(category: string): Promise<Favorite[]> {
-    return Array.from(this.favorites.values()).filter(
-      (favorite) => favorite.category === category
-    );
+    return await db
+      .select()
+      .from(favorites)
+      .where(eq(favorites.category, category));
   }
 
   async createFavorite(insertFavorite: InsertFavorite): Promise<Favorite> {
-    const id = this.currentId.favorites++;
-    const favorite: Favorite = { ...insertFavorite, id };
-    this.favorites.set(id, favorite);
+    const now = new Date().toISOString();
+    const [favorite] = await db
+      .insert(favorites)
+      .values({ ...insertFavorite, createdAt: now })
+      .returning();
     return favorite;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
