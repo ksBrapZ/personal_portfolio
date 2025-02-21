@@ -229,6 +229,7 @@ export function Admin() {
       hyperlink: favorite.hyperlink || "",
       metadata: favorite.metadata || {},
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (!isLoggedIn) {

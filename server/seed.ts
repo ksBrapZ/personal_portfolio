@@ -1,5 +1,5 @@
 import { storage } from "./storage";
-import { type InsertFavorite } from "@shared/schema";
+import { type InsertFavorite, type InsertPost } from "@shared/schema";
 
 const seedData = {
   tools: [
@@ -70,6 +70,135 @@ const seedData = {
     { name: "Carl Sagan", description: "Astronomer & educator", type: "Scientist" },
     { name: "Jane Goodall", description: "Primatologist & environmentalist", type: "Scientist" }
   ],
+  posts: [
+    {
+      title: "Building a Life with Intention",
+      content: `
+# Building a Life with Intention
+
+Living with intention means making conscious choices about how we spend our time, energy, and resources. It's about aligning our daily actions with our core values and long-term goals.
+
+## The Power of Intentional Living
+
+When we live intentionally, we:
+
+- Make decisions that align with our values
+- Focus on what truly matters
+- Reduce stress and anxiety
+- Create meaningful relationships
+- Achieve our goals more effectively
+
+## Practical Steps for Intentional Living
+
+### 1. Define Your Values
+
+Start by identifying what matters most to you. Your values serve as a compass for decision-making and help you stay true to yourself.
+
+### 2. Set Clear Goals
+
+Transform your values into actionable goals. Make them SMART:
+- Specific
+- Measurable
+- Achievable
+- Relevant
+- Time-bound
+
+### 3. Create Daily Rituals
+
+Establish routines that support your intentions:
+- Morning meditation
+- Regular exercise
+- Mindful eating
+- Quality time with loved ones
+- Continuous learning
+
+## The Role of Technology
+
+In our digital age, technology can either support or hinder intentional living. Choose tools and platforms that:
+
+1. Enhance productivity
+2. Foster meaningful connections
+3. Support personal growth
+4. Minimize distractions
+
+## Conclusion
+
+Building a life with intention is a journey, not a destination. It requires constant reflection, adjustment, and commitment to growth.
+
+Remember: Small, consistent actions aligned with your values create meaningful change over time.`,
+      slug: "building-life-with-intention",
+      authorId: 1,
+      publishedAt: "2025-02-21T12:00:00Z",
+      excerpt: "Thoughts on balancing startup life, outdoor adventures, and personal growth.",
+      featuredImage: "https://images.unsplash.com/photo-1493612276216-ee3925520721"
+    },
+    {
+      title: "The Tools That Shape Our Work",
+      content: `
+# The Tools That Shape Our Work
+
+The tools we use fundamentally shape how we think and work. From development environments to productivity apps, our choice of tools can significantly impact our efficiency and creativity.
+
+## Development Tools
+
+### Code Editors
+
+\`\`\`javascript
+// Example of clean, well-formatted code
+function optimizeWorkflow(tools) {
+  return tools.reduce((efficiency, tool) => {
+    return efficiency * tool.productivity;
+  }, 1);
+}
+\`\`\`
+
+Key features to look for:
+- Syntax highlighting
+- Intelligent code completion
+- Git integration
+- Extension ecosystem
+
+### Version Control
+
+Best practices for Git workflow:
+1. Use meaningful commit messages
+2. Branch for new features
+3. Review code thoroughly
+4. Maintain clean history
+
+## Productivity Suite
+
+Essential tools for maximum productivity:
+
+### Task Management
+- Project tracking
+- Time management
+- Team collaboration
+
+### Communication
+- Real-time chat
+- Video conferencing
+- Documentation
+
+## Hardware Considerations
+
+Investing in quality hardware:
+
+1. Multi-monitor setup
+2. Ergonomic peripherals
+3. Sufficient processing power
+4. Reliable backup solutions
+
+## Conclusion
+
+The right tools amplify our capabilities and make complex tasks manageable. Choose wisely and invest time in mastering your toolset.`,
+      slug: "tools-that-shape-work",
+      authorId: 1,
+      publishedAt: "2025-02-18T15:30:00Z",
+      excerpt: "A deep dive into the software and gear that powers my daily workflow.",
+      featuredImage: "https://images.unsplash.com/photo-1516387938699-a93567ec168e"
+    }
+  ]
 };
 
 async function seedDatabase() {
@@ -117,6 +246,20 @@ async function seedDatabase() {
         type: person.type,
       };
       await storage.createFavorite(favorite);
+    }
+
+    // Seed blog posts
+    for (const post of seedData.posts) {
+      const blogPost: InsertPost = {
+        title: post.title,
+        content: post.content,
+        slug: post.slug,
+        authorId: post.authorId,
+        publishedAt: post.publishedAt,
+        excerpt: post.excerpt,
+        featuredImage: post.featuredImage,
+      };
+      await storage.createPost(blogPost);
     }
 
     console.log("Database seeded successfully!");
