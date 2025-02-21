@@ -6,7 +6,6 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Favorites from "@/pages/Favorites";
 import Blog from "@/pages/Blog";
-import Navigation from "@/components/Navigation";
 
 function Router() {
   return (
@@ -22,7 +21,6 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Navigation />
       <Router />
       <Toaster />
     </QueryClientProvider>
