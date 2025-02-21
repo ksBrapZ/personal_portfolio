@@ -14,7 +14,7 @@ export function ProfileMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="h-10 w-10 cursor-pointer hover:opacity-80 transition-opacity">
-            <AvatarImage src="/profile-motorcycle.jpg" className="object-cover" />
+            <AvatarImage src="/profile-motorcycle.jpg" alt="Profile" className="object-cover" loading="eager" />
             <AvatarFallback>K</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
