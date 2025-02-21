@@ -12,77 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const favorites = {
-  tools: [
-    { name: "VS Code", description: "Modern code editor with great extensions", type: "Development" },
-    { name: "Figma", description: "Collaborative design tool", type: "Design" },
-    { name: "Notion", description: "All-in-one workspace", type: "Productivity" },
-    { name: "Docker", description: "Container platform", type: "Development" },
-    { name: "GitHub", description: "Version control platform", type: "Development" },
-    { name: "Sketch", description: "Digital design toolkit", type: "Design" },
-    { name: "Adobe XD", description: "UI/UX design tool", type: "Design" },
-    { name: "Slack", description: "Team communication platform", type: "Productivity" },
-    { name: "Trello", description: "Project management tool", type: "Productivity" },
-    { name: "PostMan", description: "API development environment", type: "Development" },
-    { name: "IntelliJ IDEA", description: "Java IDE", type: "Development" },
-    { name: "Adobe Photoshop", description: "Image editing software", type: "Design" },
-    { name: "Asana", description: "Project management platform", type: "Productivity" },
-    { name: "Terminal", description: "Command line interface", type: "Development" },
-    { name: "Miro", description: "Online whiteboard platform", type: "Design" },
-  ],
-  products: [
-    { name: "Sony WH-1000XM4", description: "Noise-cancelling headphones", type: "Audio" },
-    { name: "Kindle Oasis", description: "Premium e-reader", type: "Reading" },
-    { name: "Peak Design Backpack", description: "Versatile camera bag", type: "Photography" },
-    { name: "MacBook Pro", description: "Professional laptop", type: "Computing" },
-    { name: "iPad Pro", description: "Versatile tablet", type: "Computing" },
-    { name: "Bose QC35", description: "Wireless headphones", type: "Audio" },
-    { name: "Canon R5", description: "Mirrorless camera", type: "Photography" },
-    { name: "Kindle Paperwhite", description: "E-reader with backlight", type: "Reading" },
-    { name: "AirPods Pro", description: "Wireless earbuds", type: "Audio" },
-    { name: "Dell XPS", description: "Premium laptop", type: "Computing" },
-    { name: "Sony A7III", description: "Full-frame camera", type: "Photography" },
-    { name: "reMarkable 2", description: "E-ink tablet", type: "Reading" },
-    { name: "Herman Miller Aeron", description: "Ergonomic chair", type: "Office" },
-    { name: "LG Ultrafine", description: "4K monitor", type: "Computing" },
-    { name: "Rode NT-USB", description: "USB microphone", type: "Audio" },
-  ],
-  books: [
-    { title: "Thinking, Fast and Slow", author: "Daniel Kahneman", type: "Psychology" },
-    { title: "Zero to One", author: "Peter Thiel", type: "Business" },
-    { title: "Dune", author: "Frank Herbert", type: "Sci-Fi" },
-    { title: "Sapiens", author: "Yuval Noah Harari", type: "History" },
-    { title: "The Lean Startup", author: "Eric Ries", type: "Business" },
-    { title: "1984", author: "George Orwell", type: "Sci-Fi" },
-    { title: "Deep Work", author: "Cal Newport", type: "Productivity" },
-    { title: "Atomic Habits", author: "James Clear", type: "Psychology" },
-    { title: "The Design of Everyday Things", author: "Don Norman", type: "Design" },
-    { title: "Snow Crash", author: "Neal Stephenson", type: "Sci-Fi" },
-    { title: "Good to Great", author: "Jim Collins", type: "Business" },
-    { title: "The Power of Now", author: "Eckhart Tolle", type: "Psychology" },
-    { title: "Foundation", author: "Isaac Asimov", type: "Sci-Fi" },
-    { title: "Start with Why", author: "Simon Sinek", type: "Business" },
-    { title: "The Pragmatic Programmer", author: "Dave Thomas", type: "Technology" },
-  ],
-  people: [
-    { name: "Naval Ravikant", description: "Angel investor & philosopher", type: "Thought Leader" },
-    { name: "Richard Feynman", description: "Physicist & educator", type: "Scientist" },
-    { name: "Annie Duke", description: "Decision strategist", type: "Expert" },
-    { name: "Ada Lovelace", description: "First computer programmer", type: "Pioneer" },
-    { name: "Marie Curie", description: "Physics & chemistry pioneer", type: "Scientist" },
-    { name: "Steve Jobs", description: "Apple co-founder", type: "Innovator" },
-    { name: "Alan Turing", description: "Computer science pioneer", type: "Pioneer" },
-    { name: "Grace Hopper", description: "Computer programming pioneer", type: "Pioneer" },
-    { name: "Elon Musk", description: "Technology entrepreneur", type: "Innovator" },
-    { name: "Barbara Liskov", description: "Computer scientist", type: "Pioneer" },
-    { name: "Tim Berners-Lee", description: "World Wide Web inventor", type: "Pioneer" },
-    { name: "Margaret Hamilton", description: "Software engineering pioneer", type: "Pioneer" },
-    { name: "Nikola Tesla", description: "Electrical engineer", type: "Innovator" },
-    { name: "Carl Sagan", description: "Astronomer & educator", type: "Scientist" },
-    { name: "Jane Goodall", description: "Primatologist & environmentalist", type: "Scientist" },
-  ],
-};
+import { useQuery } from "@tanstack/react-query";
 
 const typeColors: Record<string, { border: string; text: string }> = {
   Development: { border: "border-blue-500", text: "text-blue-500" },
@@ -122,6 +52,42 @@ const TypeBadge = ({ type }: { type: string }) => {
 };
 
 export default function Favorites() {
+  const { data: tools, isLoading: toolsLoading } = useQuery({
+    queryKey: ["/api/favorites", "tools"],
+    queryFn: async () => {
+      const response = await fetch("/api/favorites?category=tools");
+      if (!response.ok) throw new Error("Failed to fetch tools");
+      return response.json();
+    },
+  });
+
+  const { data: products, isLoading: productsLoading } = useQuery({
+    queryKey: ["/api/favorites", "products"],
+    queryFn: async () => {
+      const response = await fetch("/api/favorites?category=products");
+      if (!response.ok) throw new Error("Failed to fetch products");
+      return response.json();
+    },
+  });
+
+  const { data: books, isLoading: booksLoading } = useQuery({
+    queryKey: ["/api/favorites", "books"],
+    queryFn: async () => {
+      const response = await fetch("/api/favorites?category=books");
+      if (!response.ok) throw new Error("Failed to fetch books");
+      return response.json();
+    },
+  });
+
+  const { data: people, isLoading: peopleLoading } = useQuery({
+    queryKey: ["/api/favorites", "people"],
+    queryFn: async () => {
+      const response = await fetch("/api/favorites?category=people");
+      if (!response.ok) throw new Error("Failed to fetch people");
+      return response.json();
+    },
+  });
+
   return (
     <div className="min-h-screen bg-background p-8">
       <BackgroundGraphic />
@@ -155,8 +121,12 @@ export default function Favorites() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {favorites.tools.map((item) => (
-                  <TableRow key={item.name}>
+                {toolsLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
+                  </TableRow>
+                ) : tools?.map((item: any) => (
+                  <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell><TypeBadge type={item.type} /></TableCell>
@@ -176,8 +146,12 @@ export default function Favorites() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {favorites.products.map((item) => (
-                  <TableRow key={item.name}>
+                {productsLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
+                  </TableRow>
+                ) : products?.map((item: any) => (
+                  <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell><TypeBadge type={item.type} /></TableCell>
@@ -197,10 +171,14 @@ export default function Favorites() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {favorites.books.map((item) => (
-                  <TableRow key={item.title}>
-                    <TableCell className="font-medium">{item.title}</TableCell>
-                    <TableCell>{item.author}</TableCell>
+                {booksLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
+                  </TableRow>
+                ) : books?.map((item: any) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell>{item.metadata?.author || item.description}</TableCell>
                     <TableCell><TypeBadge type={item.type} /></TableCell>
                   </TableRow>
                 ))}
@@ -218,8 +196,12 @@ export default function Favorites() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {favorites.people.map((item) => (
-                  <TableRow key={item.name}>
+                {peopleLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
+                  </TableRow>
+                ) : people?.map((item: any) => (
+                  <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell><TypeBadge type={item.type} /></TableCell>
