@@ -235,7 +235,7 @@ export function Admin() {
   const tinymceInit = {
     height: 500,
     menubar: true,
-    referrerpolicy: "origin",
+    apiKey: import.meta.env.VITE_TINYMCE_API_KEY,
     plugins: [
       // Core editing features
       'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
@@ -255,9 +255,13 @@ export function Admin() {
       { value: 'First.Name', title: 'First Name' },
       { value: 'Email', title: 'Email' },
     ],
-    ai_request: (request, respondWith) => respondWith.string(() =>
-      Promise.reject('See docs to implement AI Assistant')
-    ),
+    branding: false,
+    promotion: false,
+    setup: (editor) => {
+      editor.on('init', () => {
+        console.log('TinyMCE initialized with API key:', import.meta.env.VITE_TINYMCE_API_KEY);
+      });
+    }
   };
 
   if (!isLoggedIn) {
