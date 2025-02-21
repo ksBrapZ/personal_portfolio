@@ -18,10 +18,8 @@ const ADMIN_CREDENTIALS = {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Middleware to check for admin subdomain
   app.use((req, res, next) => {
-    const host = req.get('host');
-    // Check if we're on the admin subdomain
-    if (host?.startsWith('admin.')) {
-      // Set a flag to indicate we're on admin subdomain
+    // Check if we're on the admin path
+    if (req.path.startsWith('/admin')) {
       req.isAdminDomain = true;
     }
     next();

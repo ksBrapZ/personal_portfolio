@@ -11,12 +11,12 @@ import { ProfileMenu } from "@/components/ProfileMenu";
 import AdminPage from "@/pages/AdminPage";
 
 function Router() {
-  const isAdminDomain = window.location.host.startsWith('admin.');
+  const isAdminPath = window.location.pathname.startsWith('/admin');
 
-  if (isAdminDomain) {
+  if (isAdminPath) {
     return (
       <Switch>
-        <Route path="/" component={AdminPage} />
+        <Route path="/admin" component={AdminPage} />
         <Route component={NotFound} />
       </Switch>
     );
