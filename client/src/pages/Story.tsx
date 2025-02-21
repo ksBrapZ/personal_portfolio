@@ -155,9 +155,9 @@ export default function Story() {
                   }
                 }}
               >
-                <h2 className="text-2xl font-semibold mb-4">{chapter.title}</h2>
+                <h2 className="text-3xl font-bold mb-4 text-primary/90">{chapter.title}</h2>
                 {chapter.content.split('\n\n').map((paragraph, i) => (
-                  <p key={i} className="text-muted-foreground mb-4">
+                  <p key={i} className="text-muted-foreground/90 text-base leading-relaxed mb-4">
                     {paragraph.trim()}
                   </p>
                 ))}
