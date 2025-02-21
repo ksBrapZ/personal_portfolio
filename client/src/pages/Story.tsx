@@ -94,30 +94,77 @@ export default function Story() {
         </div>
 
         {/* Timeline */}
-        <div className="relative space-y-0">
+        <motion.div 
+          className="relative space-y-0"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.2
+              }
+            }
+          }}
+        >
           {chapters.map((chapter, index) => (
             <motion.div
               key={chapter.title}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
               className="relative pl-12 pb-12 border-l-2 border-primary/20 last:border-l-0"
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                visible: { 
+                  opacity: 1, 
+                  x: 0,
+                  transition: {
+                    duration: 0.6,
+                    ease: "easeOut"
+                  }
+                }
+              }}
+              viewport={{ once: true, margin: "-100px" }}
             >
-              <div className="absolute left-[-17px] top-0 p-1 bg-background rounded-full border-2 border-primary">
+              <motion.div 
+                className="absolute left-[-17px] top-0 p-1 bg-background rounded-full border-2 border-primary"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                whileInView={{ 
+                  scale: [1, 1.1, 1],
+                  transition: {
+                    duration: 1,
+                    ease: "easeInOut",
+                    times: [0, 0.5, 1],
+                    repeat: Infinity,
+                    repeatDelay: 2
+                  }
+                }}
+                viewport={{ once: false }}
+              >
                 {chapter.icon}
-              </div>
-              <div className="prose prose-sm dark:prose-invert">
+              </motion.div>
+              <motion.div 
+                className="prose prose-sm dark:prose-invert"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { 
+                    opacity: 1, 
+                    y: 0,
+                    transition: {
+                      duration: 0.4,
+                      delay: 0.2
+                    }
+                  }
+                }}
+              >
                 <h2 className="text-2xl font-semibold mb-4">{chapter.title}</h2>
                 {chapter.content.split('\n\n').map((paragraph, i) => (
                   <p key={i} className="text-muted-foreground mb-4">
-                    {paragraph}
+                    {paragraph.trim()}
                   </p>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
