@@ -8,8 +8,20 @@ import Favorites from "@/pages/Favorites";
 import Blog from "@/pages/Blog";
 import Story from "@/pages/Story";
 import { ProfileMenu } from "@/components/ProfileMenu";
+import AdminPage from "@/pages/AdminPage";
 
 function Router() {
+  const isAdminDomain = window.location.host.startsWith('admin.');
+
+  if (isAdminDomain) {
+    return (
+      <Switch>
+        <Route path="/" component={AdminPage} />
+        <Route component={NotFound} />
+      </Switch>
+    );
+  }
+
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -22,9 +34,11 @@ function Router() {
 }
 
 function App() {
+  const isAdminDomain = window.location.host.startsWith('admin.');
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ProfileMenu />
+      {!isAdminDomain && <ProfileMenu />}
       <Router />
       <Toaster />
     </QueryClientProvider>
