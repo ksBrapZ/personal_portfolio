@@ -1,42 +1,52 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Navigation() {
   const [location] = useLocation();
 
   const links = [
-    { href: "/#home", label: "Home" },
-    { href: "/#about", label: "About" },
-    { href: "/#projects", label: "Projects" },
-    { href: "/#contact", label: "Contact" },
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    { href: "/favorites", label: "Favorites" },
   ];
 
   return (
     <motion.nav 
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
+      className="fixed top-4 right-4 z-50"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/">
-          <a className="text-xl font-bold">JD</a>
-        </Link>
-        
-        <div className="hidden md:flex gap-8">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Menu className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
           {links.map(({ href, label }) => (
-            <Link key={href} href={href}>
-              <a className={cn(
-                "transition-colors hover:text-primary",
-                location === href && "text-primary font-medium"
-              )}>
-                {label}
-              </a>
-            </Link>
+            <DropdownMenuItem key={href}>
+              <Link href={href}>
+                <a className={cn(
+                  "w-full",
+                  location === href && "font-medium"
+                )}>
+                  {label}
+                </a>
+              </Link>
+            </DropdownMenuItem>
           ))}
-        </div>
-      </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </motion.nav>
   );
 }
