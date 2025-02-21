@@ -19,6 +19,8 @@ export interface IStorage {
   getAllFavorites(): Promise<Favorite[]>;
   getFavoritesByCategory(category: string): Promise<Favorite[]>;
   createFavorite(favorite: InsertFavorite): Promise<Favorite>;
+  updateFavorite(id: number, favorite: InsertFavorite): Promise<Favorite | undefined>;
+  deleteFavorite(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -76,6 +78,23 @@ export class DatabaseStorage implements IStorage {
       .values({ ...insertFavorite, createdAt: now })
       .returning();
     return favorite;
+  }
+
+  async updateFavorite(id: number, insertFavorite: InsertFavorite): Promise<Favorite | undefined> {
+    const [favorite] = await db
+      .update(favorites)
+      .set({ ...insertFavorite })
+      .where(eq(favorites.id, id))
+      .returning();
+    return favorite;
+  }
+
+  async deleteFavorite(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(favorites)
+      .where(eq(favorites.id, id))
+      .returning();
+    return !!deleted;
   }
 }
 

@@ -96,21 +96,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/update-content", (req, res) => {
+  // New endpoints for editing and deleting favorites
+  app.patch("/api/favorites/:id", async (req, res) => {
     if (!req.isAdminDomain) {
-      return res.status(403).json({ message: "Access denied. Please use the admin subdomain." });
+      return res.status(403).json({ message: "Access denied" });
     }
 
-    const { content } = req.body;
-    if (!content) {
-      return res.status(400).json({ message: "Content is required" });
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertFavoriteSchema.parse(req.body);
+      const favorite = await storage.updateFavorite(id, validatedData);
+      if (!favorite) {
+        return res.status(404).json({ message: "Favorite not found" });
+      }
+      res.json(favorite);
+    } catch (error) {
+      res.status(400).json({ 
+        message: "Invalid favorite data", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
-
-    // Here you would typically update your content storage
-    // For now, we'll just acknowledge the request
-    res.status(200).json({ message: "Content updated successfully" });
   });
 
+  app.delete("/api/favorites/:id", async (req, res) => {
+    if (!req.isAdminDomain) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteFavorite(id);
+      if (!success) {
+        return res.status(404).json({ message: "Favorite not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to delete favorite", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

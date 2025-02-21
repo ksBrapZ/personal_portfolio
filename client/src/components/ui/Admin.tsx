@@ -27,6 +27,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { blogPostSchema, favoriteItemSchema } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Edit, Trash2 } from "lucide-react";
 
 const adminLoginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -36,9 +56,11 @@ const adminLoginSchema = z.object({
 type AdminLoginForm = z.infer<typeof adminLoginSchema>;
 type BlogPostForm = z.infer<typeof blogPostSchema>;
 type FavoriteItemForm = z.infer<typeof favoriteItemSchema>;
+type Favorite = z.infer<typeof favoriteItemSchema> & { id: number };
 
 export function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [editingFavorite, setEditingFavorite] = useState<Favorite | null>(null);
   const { toast } = useToast();
 
   const loginForm = useForm<AdminLoginForm>({
@@ -77,7 +99,7 @@ export function Admin() {
     enabled: isLoggedIn,
   });
 
-  const { data: favorites } = useQuery({
+  const { data: favorites, isLoading: favoritesLoading } = useQuery({
     queryKey: ["/api/favorites"],
     enabled: isLoggedIn,
   });
@@ -124,6 +146,49 @@ export function Admin() {
     },
   });
 
+  const updateFavorite = useMutation({
+    mutationFn: async (data: FavoriteItemForm & { id: number }) => {
+      const { id, ...favoriteData } = data;
+      await apiRequest("PATCH", `/api/favorites/${id}`, favoriteData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      toast({
+        title: "Success",
+        description: "Favorite item updated successfully",
+      });
+      setEditingFavorite(null);
+      favoriteForm.reset();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteFavorite = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/favorites/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      toast({
+        title: "Success",
+        description: "Favorite item deleted successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const onLoginSubmit = async (data: AdminLoginForm) => {
     try {
       const response = await fetch("/api/admin/login", {
@@ -152,6 +217,18 @@ export function Admin() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleEdit = (favorite: Favorite) => {
+    setEditingFavorite(favorite);
+    favoriteForm.reset({
+      name: favorite.name,
+      description: favorite.description,
+      category: favorite.category,
+      type: favorite.type,
+      hyperlink: favorite.hyperlink || "",
+      metadata: favorite.metadata || {},
+    });
   };
 
   if (!isLoggedIn) {
@@ -206,11 +283,208 @@ export function Admin() {
         </Button>
       </div>
 
-      <Tabs defaultValue="blog" className="space-y-6">
+      <Tabs defaultValue="favorites" className="space-y-6">
         <TabsList className="w-full">
-          <TabsTrigger value="blog" className="flex-1">Blog Posts</TabsTrigger>
           <TabsTrigger value="favorites" className="flex-1">Favorites</TabsTrigger>
+          <TabsTrigger value="blog" className="flex-1">Blog Posts</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="favorites">
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>{editingFavorite ? "Edit Favorite" : "Add Favorite"}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...favoriteForm}>
+                <form
+                  onSubmit={favoriteForm.handleSubmit((data) => {
+                    if (editingFavorite) {
+                      updateFavorite.mutate({ ...data, id: editingFavorite.id });
+                    } else {
+                      createFavorite.mutate(data);
+                    }
+                  })}
+                  className="space-y-6"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={favoriteForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={favoriteForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="tools">Tools</SelectItem>
+                              <SelectItem value="products">Products</SelectItem>
+                              <SelectItem value="books">Books</SelectItem>
+                              <SelectItem value="people">People</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={favoriteForm.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={favoriteForm.control}
+                      name="type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Type</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="e.g., Development, Audio, Psychology" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={favoriteForm.control}
+                      name="hyperlink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Hyperlink</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="url" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex justify-between">
+                    <Button
+                      type="submit"
+                      disabled={createFavorite.isPending || updateFavorite.isPending}
+                    >
+                      {editingFavorite
+                        ? updateFavorite.isPending ? "Updating..." : "Update Favorite"
+                        : createFavorite.isPending ? "Adding..." : "Add Favorite"
+                      }
+                    </Button>
+                    {editingFavorite && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setEditingFavorite(null);
+                          favoriteForm.reset();
+                        }}
+                      >
+                        Cancel Edit
+                      </Button>
+                    )}
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Existing Favorites</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {favoritesLoading ? (
+                <div>Loading favorites...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead className="w-[100px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {favorites?.map((favorite: Favorite) => (
+                      <TableRow key={favorite.id}>
+                        <TableCell>{favorite.name}</TableCell>
+                        <TableCell>{favorite.category}</TableCell>
+                        <TableCell>{favorite.type}</TableCell>
+                        <TableCell className="max-w-[300px] truncate">
+                          {favorite.description}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(favorite)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete Favorite</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to delete "{favorite.name}"? This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteFavorite.mutate(favorite.id)}
+                                  >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="blog">
           <Card>
@@ -311,105 +585,6 @@ export function Admin() {
 
                   <Button type="submit" disabled={createPost.isPending}>
                     {createPost.isPending ? "Creating..." : "Create Post"}
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="favorites">
-          <Card>
-            <CardHeader>
-              <CardTitle>Add Favorite Item</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...favoriteForm}>
-                <form onSubmit={favoriteForm.handleSubmit((data) => createFavorite.mutate(data))} className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={favoriteForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={favoriteForm.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="tools">Tools</SelectItem>
-                              <SelectItem value="products">Products</SelectItem>
-                              <SelectItem value="books">Books</SelectItem>
-                              <SelectItem value="people">People</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={favoriteForm.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Textarea {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={favoriteForm.control}
-                      name="type"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Type</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="e.g., Development, Audio, Psychology" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={favoriteForm.control}
-                      name="hyperlink"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Hyperlink</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="url" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <Button type="submit" disabled={createFavorite.isPending}>
-                    {createFavorite.isPending ? "Adding..." : "Add Favorite"}
                   </Button>
                 </form>
               </Form>
