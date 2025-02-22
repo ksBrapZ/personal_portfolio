@@ -1,6 +1,9 @@
+// Projects.tsx - Showcase of professional work with optimized image loading
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { lazy, Suspense } from "react";
 
+// Project data moved to a separate constant for better maintainability
 const projects = [
   {
     title: "E-commerce Platform",
@@ -22,19 +25,25 @@ const projects = [
     description: "Collaborative project management tool for remote teams.",
     image: "https://images.unsplash.com/photo-1510759395231-72b17d622279",
   },
-];
+] as const; // Using const assertion for type safety
+
+// Animation constants for consistency
+const sectionAnimation = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.6 }
+};
 
 export default function Projects() {
   return (
     <section id="projects" className="py-20">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          {...sectionAnimation}
           className="space-y-12"
         >
+          {/* Section Header */}
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">Featured Projects</h2>
             <p className="text-muted-foreground">
@@ -42,6 +51,7 @@ export default function Projects() {
             </p>
           </div>
 
+          {/* Project Grid */}
           <div className="grid md:grid-cols-2 gap-6">
             {projects.map((project, index) => (
               <motion.div
@@ -51,14 +61,18 @@ export default function Projects() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <Card className="overflow-hidden h-full">
-                  <CardContent className="p-0">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-48 object-cover"
-                    />
-                  </CardContent>
+                <Card className="overflow-hidden h-full hover:shadow-lg transition-shadow">
+                  <Suspense fallback={<div className="h-48 bg-muted animate-pulse" />}>
+                    <CardContent className="p-0">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-48 object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </CardContent>
+                  </Suspense>
                   <CardHeader>
                     <CardTitle>{project.title}</CardTitle>
                     <p className="text-muted-foreground">{project.description}</p>
