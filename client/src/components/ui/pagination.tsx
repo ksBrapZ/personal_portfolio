@@ -1,9 +1,14 @@
+// pagination.tsx - Page navigation component
+// This component provides controls for navigating through multiple pages of content
+// It includes previous/next buttons and page numbers with responsive styling
+
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { ButtonProps, buttonVariants } from "@/components/ui/button"
 
+// Main navigation container
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
@@ -14,6 +19,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
 )
 Pagination.displayName = "Pagination"
 
+// Container for pagination items (page numbers, prev/next buttons)
 const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.ComponentProps<"ul">
@@ -26,6 +32,7 @@ const PaginationContent = React.forwardRef<
 ))
 PaginationContent.displayName = "PaginationContent"
 
+// Individual pagination item wrapper
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
@@ -34,6 +41,7 @@ const PaginationItem = React.forwardRef<
 ))
 PaginationItem.displayName = "PaginationItem"
 
+// Clickable page number or navigation link
 type PaginationLinkProps = {
   isActive?: boolean
 } & Pick<ButtonProps, "size"> &
@@ -59,6 +67,7 @@ const PaginationLink = ({
 )
 PaginationLink.displayName = "PaginationLink"
 
+// Previous page button with chevron icon
 const PaginationPrevious = ({
   className,
   ...props
@@ -75,6 +84,7 @@ const PaginationPrevious = ({
 )
 PaginationPrevious.displayName = "PaginationPrevious"
 
+// Next page button with chevron icon
 const PaginationNext = ({
   className,
   ...props
@@ -91,6 +101,7 @@ const PaginationNext = ({
 )
 PaginationNext.displayName = "PaginationNext"
 
+// Ellipsis indicator for skipped page numbers
 const PaginationEllipsis = ({
   className,
   ...props
@@ -106,6 +117,7 @@ const PaginationEllipsis = ({
 )
 PaginationEllipsis.displayName = "PaginationEllipsis"
 
+// Export all pagination components
 export {
   Pagination,
   PaginationContent,

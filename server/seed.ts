@@ -1,7 +1,16 @@
+// seed.ts - Database initialization script
+// This file provides initial data for the website's database, including:
+// - Sample blog posts
+// - Curated lists of favorite tools, products, books, and people
+// - Default admin user for content management
+// The data here serves as a starting point and can be customized later through the admin interface
+
 import { storage } from "./storage";
 import { type InsertFavorite, type InsertPost, type InsertUser } from "@shared/schema";
 
+// Collection of sample data organized by category
 const seedData = {
+  // Development tools, design software, and productivity applications
   tools: [
     { name: "VS Code", description: "Modern code editor with great extensions", type: "Development" },
     { name: "Figma", description: "Collaborative design tool", type: "Design" },
@@ -19,6 +28,8 @@ const seedData = {
     { name: "Terminal", description: "Command line interface", type: "Development" },
     { name: "Miro", description: "Online whiteboard platform", type: "Design" }
   ],
+
+  // Physical products and equipment recommendations
   products: [
     { name: "Sony WH-1000XM4", description: "Noise-cancelling headphones", type: "Audio" },
     { name: "Kindle Oasis", description: "Premium e-reader", type: "Reading" },
@@ -36,6 +47,8 @@ const seedData = {
     { name: "LG Ultrafine", description: "4K monitor", type: "Computing" },
     { name: "Rode NT-USB", description: "USB microphone", type: "Audio" }
   ],
+
+  // Book recommendations with authors and categories
   books: [
     { name: "Thinking, Fast and Slow", description: "By Daniel Kahneman", type: "Psychology" },
     { name: "Zero to One", description: "By Peter Thiel", type: "Business" },
@@ -53,6 +66,8 @@ const seedData = {
     { name: "Start with Why", description: "By Simon Sinek", type: "Business" },
     { name: "The Pragmatic Programmer", description: "By Dave Thomas", type: "Technology" }
   ],
+
+  // Influential people and thought leaders
   people: [
     { name: "Naval Ravikant", description: "Angel investor & philosopher", type: "Thought Leader" },
     { name: "Richard Feynman", description: "Physicist & educator", type: "Scientist" },
@@ -70,6 +85,8 @@ const seedData = {
     { name: "Carl Sagan", description: "Astronomer & educator", type: "Scientist" },
     { name: "Jane Goodall", description: "Primatologist & environmentalist", type: "Scientist" }
   ],
+
+  // Sample blog posts with rich content
   posts: [
     {
       title: "Building a Life with Intention",
@@ -201,19 +218,20 @@ The right tools amplify our capabilities and make complex tasks manageable. Choo
   ]
 };
 
+// Function to populate the database with initial data
 async function seedDatabase() {
   try {
-    // Create the admin user with correct schema
+    // Create the initial admin user account
     const adminUser: InsertUser = {
       username: "admin",
-      password: "password", // This is just for development
+      password: "password", // Note: This is just for development
       isAdmin: true,
     };
 
     const user = await storage.createUser(adminUser);
     console.log("Created admin user:", user.id);
 
-    // Seed tools
+    // Add sample tools to the favorites collection
     for (const tool of seedData.tools) {
       const favorite: InsertFavorite = {
         name: tool.name,
@@ -224,7 +242,7 @@ async function seedDatabase() {
       await storage.createFavorite(favorite);
     }
 
-    // Seed products
+    // Add sample products to the favorites collection
     for (const product of seedData.products) {
       const favorite: InsertFavorite = {
         name: product.name,
@@ -235,7 +253,7 @@ async function seedDatabase() {
       await storage.createFavorite(favorite);
     }
 
-    // Seed books
+    // Add sample books to the favorites collection
     for (const book of seedData.books) {
       const favorite: InsertFavorite = {
         name: book.name,
@@ -247,7 +265,7 @@ async function seedDatabase() {
       await storage.createFavorite(favorite);
     }
 
-    // Seed people
+    // Add sample influential people to the favorites collection
     for (const person of seedData.people) {
       const favorite: InsertFavorite = {
         name: person.name,
@@ -258,7 +276,7 @@ async function seedDatabase() {
       await storage.createFavorite(favorite);
     }
 
-    // Seed blog posts with the admin user's ID
+    // Add sample blog posts linked to the admin user
     for (const post of seedData.posts) {
       const blogPost: InsertPost = {
         title: post.title,
