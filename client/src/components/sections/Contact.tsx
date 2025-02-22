@@ -1,8 +1,14 @@
+// Contact.tsx - Contact information display section
+// This component shows contact details in visually appealing cards with icons
+// It uses Framer Motion for smooth animations and Lucide icons for visual elements
+
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Contact() {
+  // Contact information data structure
+  // Each item includes an icon, title, and content to be displayed
   const contactInfo = [
     {
       icon: <Mail className="h-6 w-6" />,
@@ -22,8 +28,10 @@ export default function Contact() {
   ];
 
   return (
+    // Section container with subtle background
     <section id="contact" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
+        {/* Main content container with animation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,6 +39,7 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
           className="space-y-12"
         >
+          {/* Section header with title and description */}
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
             <p className="text-muted-foreground">
@@ -38,8 +47,10 @@ export default function Contact() {
             </p>
           </div>
 
+          {/* Contact cards grid with responsive layout */}
           <div className="grid md:grid-cols-3 gap-6">
             {contactInfo.map((info, index) => (
+              // Individual contact card with staggered animation
               <motion.div
                 key={info.title}
                 initial={{ opacity: 0, y: 20 }}
@@ -49,6 +60,7 @@ export default function Contact() {
               >
                 <Card>
                   <CardHeader className="text-center">
+                    {/* Icon container with background */}
                     <div className="mx-auto mb-4 p-2 bg-primary/10 rounded-full">
                       {info.icon}
                     </div>

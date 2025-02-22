@@ -1,3 +1,7 @@
+// Favorites.tsx - Curated collection display page
+// This component displays categorized lists of favorite items (tools, products, books, people)
+// It uses tabs for organization and includes color-coded badges for visual categorization
+
 import { motion } from "framer-motion";
 import { BackButton } from "@/components/ui/back-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,6 +18,8 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 
+// Color mapping for different item types
+// Each type gets a unique border and text color for visual distinction
 const typeColors: Record<string, { border: string; text: string }> = {
   Development: { border: "border-blue-500", text: "text-blue-500" },
   Design: { border: "border-purple-500", text: "text-purple-500" },
@@ -35,6 +41,7 @@ const typeColors: Record<string, { border: string; text: string }> = {
   Office: { border: "border-stone-500", text: "text-stone-500" },
 };
 
+// TypeBadge component - Displays a colored badge for each item type
 const TypeBadge = ({ type }: { type: string }) => {
   const colors = typeColors[type] || { border: "border-gray-500", text: "text-gray-500" };
   return (
@@ -52,6 +59,8 @@ const TypeBadge = ({ type }: { type: string }) => {
 };
 
 export default function Favorites() {
+  // Data fetching for each category using React Query
+  // Each query loads data for a specific category (tools, products, books, people)
   const { data: tools, isLoading: toolsLoading } = useQuery({
     queryKey: ["/api/favorites", "tools"],
     queryFn: async () => {
@@ -89,9 +98,11 @@ export default function Favorites() {
   });
 
   return (
+    // Main container with background graphic
     <div className="min-h-screen bg-background p-8">
       <BackgroundGraphic />
       <BackButton />
+      {/* Animated content container */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -103,6 +114,7 @@ export default function Favorites() {
           A curated collection of tools, products, books, and people that have influenced my journey.
         </p>
 
+        {/* Tab system for category navigation */}
         <Tabs defaultValue="tools" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="tools">Tools</TabsTrigger>
@@ -111,6 +123,7 @@ export default function Favorites() {
             <TabsTrigger value="people">People</TabsTrigger>
           </TabsList>
 
+          {/* Tools tab content */}
           <TabsContent value="tools" className="mt-6">
             <Table>
               <TableHeader>
@@ -136,6 +149,7 @@ export default function Favorites() {
             </Table>
           </TabsContent>
 
+          {/* Products tab content */}
           <TabsContent value="products" className="mt-6">
             <Table>
               <TableHeader>
@@ -161,6 +175,7 @@ export default function Favorites() {
             </Table>
           </TabsContent>
 
+          {/* Books tab content */}
           <TabsContent value="books" className="mt-6">
             <Table>
               <TableHeader>
@@ -186,6 +201,7 @@ export default function Favorites() {
             </Table>
           </TabsContent>
 
+          {/* People tab content */}
           <TabsContent value="people" className="mt-6">
             <Table>
               <TableHeader>
