@@ -13,6 +13,7 @@ const __dirname = dirname(__filename);
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
 
 // Add this right after the dotenv import
 log('Environment loaded, database configured');
@@ -21,6 +22,9 @@ log('Environment loaded, database configured');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Request logging middleware
 // This tracks and logs all API requests for monitoring and debugging
@@ -98,3 +102,9 @@ app.use((req, res, next) => {
 
   startServer(typeof port === 'string' ? parseInt(port) : port);
 })();
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back the index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
