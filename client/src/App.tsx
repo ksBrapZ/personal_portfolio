@@ -15,6 +15,7 @@ import { ProfileMenu } from "@/components/ProfileMenu";
 import AdminPage from "@/pages/AdminPage";
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { BackgroundGraphic } from "@/components/ui/background-graphic"
 
 // Router component - Handles conditional routing based on domain/path
 function Router() {
@@ -50,15 +51,30 @@ function App() {
   const isAdminDomain = window.location.host.startsWith('admin.');
 
   return (
-    <ThemeProvider defaultTheme="dark">
-      <ThemeToggle />
-      {/* Wrap app in query client for data fetching */}
-      <QueryClientProvider client={queryClient}>
-        {/* Only show profile menu on main site */}
-        {!isAdminDomain && <ProfileMenu />}
-        <Router />
-        <Toaster />
-      </QueryClientProvider>
+    <ThemeProvider>
+      <div className="min-h-screen bg-background relative">
+        {/* Background graphic with explicit z-index */}
+        <div className="absolute inset-0 z-0">
+          <BackgroundGraphic />
+        </div>
+        
+        {/* Theme toggle positioning will now work */}
+        <div className="fixed bottom-4 right-4 z-50 flex items-center">
+          <div className="mr-4 text-sm text-muted-foreground">
+            Made with ❤️ by a non-technical primate with <a href="/favorites#tools" className="underline">AI tools</a>.
+          </div>
+          <ThemeToggle />
+        </div>
+        
+        {/* Main content above background */}
+        <QueryClientProvider client={queryClient}>
+          <main className="container relative z-10">
+            {!isAdminDomain && <ProfileMenu />}
+            <Router />
+          </main>
+          <Toaster />
+        </QueryClientProvider>
+      </div>
     </ThemeProvider>
   );
 }
