@@ -24,7 +24,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { blogPostSchema, favoriteItemSchema } from "@shared/schema";
+import { schema } from "@/lib/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import {
@@ -54,9 +54,9 @@ const adminLoginSchema = z.object({
 });
 
 type AdminLoginForm = z.infer<typeof adminLoginSchema>;
-type BlogPostForm = z.infer<typeof blogPostSchema>;
-type FavoriteItemForm = z.infer<typeof favoriteItemSchema>;
-type Favorite = z.infer<typeof favoriteItemSchema> & { id: number };
+type BlogPostForm = z.infer<typeof schema.blogPostSchema>;
+type FavoriteItemForm = z.infer<typeof schema.favoriteItemSchema>;
+type Favorite = z.infer<typeof schema.favoriteItemSchema> & { id: number };
 
 export function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -72,7 +72,7 @@ export function Admin() {
   });
 
   const blogPostForm = useForm<BlogPostForm>({
-    resolver: zodResolver(blogPostSchema),
+    resolver: zodResolver(schema.blogPostSchema),
     defaultValues: {
       title: "",
       content: "",
@@ -83,7 +83,7 @@ export function Admin() {
   });
 
   const favoriteForm = useForm<FavoriteItemForm>({
-    resolver: zodResolver(favoriteItemSchema),
+    resolver: zodResolver(schema.favoriteItemSchema),
     defaultValues: {
       name: "",
       description: "",
