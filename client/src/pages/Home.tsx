@@ -7,17 +7,18 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Book, Star } from "lucide-react";
+import { BackgroundGraphic } from "@/components/ui/background-graphic";
 
 export default function Home() {
   return (
-    // Main container with full height and background styling
-    <main className="h-screen flex items-center justify-center bg-background text-foreground">
+    <main className="relative min-h-screen flex items-center justify-center bg-transparent">
+      <BackgroundGraphic />
       {/* Animated content container with fade-in and slide-up effect */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="max-w-2xl mx-8"
+        className="max-w-2xl mx-8 relative z-10"
       >
         {/* Main headline */}
         <h1 className="text-4xl md:text-6xl font-bold mb-6">

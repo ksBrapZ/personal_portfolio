@@ -1,3 +1,11 @@
+// Add this at the very top of server/index.ts, before other imports
+import 'dotenv/config';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // index.ts - Main server application file
 // This file sets up the web server that powers the website's backend
 // It handles incoming requests, manages API endpoints, and serves the frontend application
@@ -5,6 +13,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+
+// Add this right after the dotenv import
+log('Environment loaded, database configured');
 
 // Create the main application server
 const app = express();
@@ -70,11 +81,20 @@ app.use((req, res, next) => {
 
   // Start the server on the specified port
   const port = process.env.PORT || 5000;
-  server.listen({
-    port: parseInt(port.toString()),
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`Server running on port ${port}`);
-  });
+  const startServer = (portNumber: number) => {
+    server.listen(portNumber, '0.0.0.0', () => {
+      log(`Server running on port ${portNumber}`);
+    }).on('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE') {
+        const nextPort = portNumber + 1;
+        log(`Port ${portNumber} is already in use, trying ${nextPort}`);
+        startServer(nextPort);
+      } else {
+        log('Server error:', err.message);
+        process.exit(1);
+      }
+    });
+  };
+
+  startServer(typeof port === 'string' ? parseInt(port) : port);
 })();

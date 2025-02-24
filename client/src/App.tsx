@@ -13,6 +13,8 @@ import Blog from "@/pages/Blog";
 import Story from "@/pages/Story";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import AdminPage from "@/pages/AdminPage";
+import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // Router component - Handles conditional routing based on domain/path
 function Router() {
@@ -48,13 +50,16 @@ function App() {
   const isAdminDomain = window.location.host.startsWith('admin.');
 
   return (
-    // Wrap app in query client for data fetching
-    <QueryClientProvider client={queryClient}>
-      {/* Only show profile menu on main site */}
-      {!isAdminDomain && <ProfileMenu />}
-      <Router />
-      <Toaster />
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="dark">
+      <ThemeToggle />
+      {/* Wrap app in query client for data fetching */}
+      <QueryClientProvider client={queryClient}>
+        {/* Only show profile menu on main site */}
+        {!isAdminDomain && <ProfileMenu />}
+        <Router />
+        <Toaster />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

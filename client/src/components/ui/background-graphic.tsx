@@ -27,40 +27,34 @@ export const BackgroundGraphic = () => {
   }, []);
 
   return (
-    // Container that covers the entire viewport
-    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 -z-10 overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.8 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
         className="absolute inset-0"
       >
+        {/* Test element to verify positioning */}
+        <div className="absolute inset-0 bg-blue-500/5" />
+        
         {/* Main cursor-following gradient */}
         <motion.div
           style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
             x: springX,
             y: springY,
-            translateX: "-50%",
-            translateY: "-50%"
           }}
-          className="absolute w-[600px] h-[600px] bg-gradient-to-r from-primary/40 via-primary/20 to-transparent rounded-full blur-3xl"
+          className="w-[600px] h-[600px] bg-blue-500/15 dark:bg-blue-500/10 rounded-full blur-3xl"
         />
 
-        {/* Static decorative elements */}
-        {/* Top-left gradient blob */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
-        {/* Bottom-right gradient blob */}
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-primary/20 to-transparent rounded-full blur-3xl" />
+        {/* Static corner gradients */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-500/15 dark:bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-blue-500/15 dark:bg-blue-500/10 rounded-full blur-3xl" />
 
-        {/* Centered cross pattern */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-30">
-          <div className="absolute inset-0 rotate-45 scale-75">
-            {/* Vertical line */}
-            <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-primary/50 to-transparent" />
-            {/* Horizontal line */}
-            <div className="absolute left-0 top-1/2 h-px w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-          </div>
-        </div>
+        {/* Grid pattern - lighter in light mode, darker in dark mode */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,.05)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:100px_100px]" />
       </motion.div>
     </div>
   );
