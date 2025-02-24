@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "start": "vite preview"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  }
+} 
