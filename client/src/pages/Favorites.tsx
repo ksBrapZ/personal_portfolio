@@ -7,7 +7,6 @@ import { BackButton } from "@/components/ui/back-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { BackgroundGraphic } from "@/components/ui/background-graphic";
 import {
   Table,
   TableBody,
@@ -48,7 +47,7 @@ const TypeBadge = ({ type }: { type: string }) => {
     <Badge
       variant="outline"
       className={cn(
-        "bg-background whitespace-nowrap",
+        "whitespace-nowrap",
         colors.border,
         colors.text
       )}
@@ -98,136 +97,136 @@ export default function Favorites() {
   });
 
   return (
-    // Main container with background graphic
-    <div className="min-h-screen bg-background p-8">
-      <BackgroundGraphic />
-      <BackButton />
-      {/* Animated content container */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-6xl mx-auto pt-16"
-      >
-        <h1 className="text-4xl font-bold mb-8">My Favorites</h1>
-        <p className="text-muted-foreground mb-12">
+    <div className="min-h-screen bg-black text-white p-4 md:p-8 pb-16">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-8">
+          <BackButton />
+        </div>
+        
+        <h1 className="text-4xl font-bold mb-4">My Favorites</h1>
+        <p className="text-gray-400 mb-8">
           A curated collection of tools, products, books, and people that have influenced my journey.
         </p>
+        
+        <div className="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 shadow-lg mb-16">
+          <Tabs defaultValue="tools" className="w-full">
+            <TabsList className="w-full grid grid-cols-4 bg-black rounded-none border-b border-gray-800 sticky top-0 z-10">
+              <TabsTrigger value="tools" className="data-[state=active]:bg-gray-900 text-white">Tools</TabsTrigger>
+              <TabsTrigger value="products" className="data-[state=active]:bg-gray-900 text-white">Products</TabsTrigger>
+              <TabsTrigger value="books" className="data-[state=active]:bg-gray-900 text-white">Books</TabsTrigger>
+              <TabsTrigger value="people" className="data-[state=active]:bg-gray-900 text-white">People</TabsTrigger>
+            </TabsList>
 
-        {/* Tab system for category navigation */}
-        <Tabs defaultValue="tools" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="tools">Tools</TabsTrigger>
-            <TabsTrigger value="products">Products</TabsTrigger>
-            <TabsTrigger value="books">Books</TabsTrigger>
-            <TabsTrigger value="people">People</TabsTrigger>
-          </TabsList>
+            <TabsContent value="tools" className="p-0 m-0">
+              <div className="overflow-y-auto max-h-[60vh]">
+                <Table>
+                  <TableHeader className="bg-black/50 sticky top-0 z-10">
+                    <TableRow className="border-gray-800">
+                      <TableHead className="text-gray-400">Name</TableHead>
+                      <TableHead className="text-gray-400">Description</TableHead>
+                      <TableHead className="text-gray-400 w-[100px]">Type</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {toolsLoading ? (
+                      <TableRow className="border-gray-800">
+                        <TableCell colSpan={3} className="text-center text-gray-500">Loading...</TableCell>
+                      </TableRow>
+                    ) : tools?.map((item: any) => (
+                      <TableRow key={item.id} className="border-gray-800">
+                        <TableCell className="font-medium text-white">{item.name}</TableCell>
+                        <TableCell className="text-gray-300">{item.description}</TableCell>
+                        <TableCell><TypeBadge type={item.type} /></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
 
-          {/* Tools tab content */}
-          <TabsContent value="tools" className="mt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="w-[100px]">Type</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {toolsLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
-                  </TableRow>
-                ) : tools?.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell><TypeBadge type={item.type} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
+            <TabsContent value="products" className="p-0 m-0">
+              <div className="overflow-y-auto max-h-[60vh]">
+                <Table>
+                  <TableHeader className="bg-black/50 sticky top-0 z-10">
+                    <TableRow className="border-gray-800">
+                      <TableHead className="text-gray-400">Name</TableHead>
+                      <TableHead className="text-gray-400">Description</TableHead>
+                      <TableHead className="text-gray-400 w-[100px]">Type</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {productsLoading ? (
+                      <TableRow className="border-gray-800">
+                        <TableCell colSpan={3} className="text-center text-gray-500">Loading...</TableCell>
+                      </TableRow>
+                    ) : products?.map((item: any) => (
+                      <TableRow key={item.id} className="border-gray-800">
+                        <TableCell className="font-medium text-white">{item.name}</TableCell>
+                        <TableCell className="text-gray-300">{item.description}</TableCell>
+                        <TableCell><TypeBadge type={item.type} /></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
 
-          {/* Products tab content */}
-          <TabsContent value="products" className="mt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="w-[100px]">Type</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {productsLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
-                  </TableRow>
-                ) : products?.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell><TypeBadge type={item.type} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
+            <TabsContent value="books" className="p-0 m-0">
+              <div className="overflow-y-auto max-h-[60vh]">
+                <Table>
+                  <TableHeader className="bg-black/50 sticky top-0 z-10">
+                    <TableRow className="border-gray-800">
+                      <TableHead className="text-gray-400">Title</TableHead>
+                      <TableHead className="text-gray-400">Author</TableHead>
+                      <TableHead className="text-gray-400 w-[100px]">Type</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {booksLoading ? (
+                      <TableRow className="border-gray-800">
+                        <TableCell colSpan={3} className="text-center text-gray-500">Loading...</TableCell>
+                      </TableRow>
+                    ) : books?.map((item: any) => (
+                      <TableRow key={item.id} className="border-gray-800">
+                        <TableCell className="font-medium text-white">{item.name}</TableCell>
+                        <TableCell className="text-gray-300">{item.metadata?.author || item.description}</TableCell>
+                        <TableCell><TypeBadge type={item.type} /></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
 
-          {/* Books tab content */}
-          <TabsContent value="books" className="mt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Author</TableHead>
-                  <TableHead className="w-[100px]">Type</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {booksLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
-                  </TableRow>
-                ) : books?.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.metadata?.author || item.description}</TableCell>
-                    <TableCell><TypeBadge type={item.type} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
-
-          {/* People tab content */}
-          <TabsContent value="people" className="mt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="w-[100px]">Type</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {peopleLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center">Loading...</TableCell>
-                  </TableRow>
-                ) : people?.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell><TypeBadge type={item.type} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
-        </Tabs>
-      </motion.div>
+            <TabsContent value="people" className="p-0 m-0">
+              <div className="overflow-y-auto max-h-[60vh]">
+                <Table>
+                  <TableHeader className="bg-black/50 sticky top-0 z-10">
+                    <TableRow className="border-gray-800">
+                      <TableHead className="text-gray-400">Name</TableHead>
+                      <TableHead className="text-gray-400">Description</TableHead>
+                      <TableHead className="text-gray-400 w-[100px]">Type</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {peopleLoading ? (
+                      <TableRow className="border-gray-800">
+                        <TableCell colSpan={3} className="text-center text-gray-500">Loading...</TableCell>
+                      </TableRow>
+                    ) : people?.map((item: any) => (
+                      <TableRow key={item.id} className="border-gray-800">
+                        <TableCell className="font-medium text-white">{item.name}</TableCell>
+                        <TableCell className="text-gray-300">{item.description}</TableCell>
+                        <TableCell><TypeBadge type={item.type} /></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
     </div>
   );
 }

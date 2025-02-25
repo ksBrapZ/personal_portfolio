@@ -11,9 +11,10 @@ declare global {
   }
 }
 
+// Use environment variables if available, otherwise fall back to default credentials
 const ADMIN_CREDENTIALS = {
-  username: "admin",
-  password: "password"
+  username: process.env.ADMIN_USERNAME || "admin",
+  password: process.env.ADMIN_PASSWORD || "password"
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -133,6 +134,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ 
         message: "Failed to delete favorite", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // Protected endpoint to seed the database with initial favorites data
+  // This is a temporary solution for the production environment
+  app.post("/api/admin/seed-favorites", async (req, res) => {
+    // Check admin credentials
+    const { username, password } = req.body;
+    if (username !== ADMIN_CREDENTIALS.username || password !== ADMIN_CREDENTIALS.password) {
+      return res.status(403).json({ message: "Invalid credentials" });
+    }
+
+    try {
+      // Get current count of favorites
+      const existingFavorites = await storage.getAllFavorites();
+      
+      // Only seed if the favorites table is empty
+      if (existingFavorites.length > 0) {
+        return res.status(200).json({ 
+          message: "Database already has favorites data", 
+          count: existingFavorites.length 
+        });
+      }
+
+      // Import seed data
+      const { default: seedModule } = await import("./seed-data.js");
+      const seedData = seedModule.seedData;
+      
+      // Add sample tools to the favorites collection
+      for (const tool of seedData.tools) {
+        const favorite = {
+          name: tool.name,
+          description: tool.description,
+          category: "tools",
+          type: tool.type,
+        };
+        await storage.createFavorite(favorite);
+      }
+
+      // Add sample products to the favorites collection
+      for (const product of seedData.products) {
+        const favorite = {
+          name: product.name,
+          description: product.description,
+          category: "products",
+          type: product.type,
+        };
+        await storage.createFavorite(favorite);
+      }
+
+      // Add sample books to the favorites collection
+      for (const book of seedData.books) {
+        const favorite = {
+          name: book.name,
+          description: book.description,
+          category: "books",
+          type: book.type,
+          metadata: { author: book.description.replace("By ", "") }
+        };
+        await storage.createFavorite(favorite);
+      }
+
+      // Add sample influential people to the favorites collection
+      for (const person of seedData.people) {
+        const favorite = {
+          name: person.name,
+          description: person.description,
+          category: "people",
+          type: person.type,
+        };
+        await storage.createFavorite(favorite);
+      }
+
+      res.status(200).json({ 
+        message: "Database seeded successfully with favorites data" 
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to seed database", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
     }

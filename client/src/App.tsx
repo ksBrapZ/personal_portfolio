@@ -13,9 +13,8 @@ import Blog from "@/pages/Blog";
 import Story from "@/pages/Story";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import AdminPage from "@/pages/AdminPage";
-import { ThemeProvider } from "@/components/theme-provider"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { BackgroundGraphic } from "@/components/ui/background-graphic"
+import { ThemeProvider } from "@/components/theme-provider";
+import { BackgroundGraphic } from "@/components/ui/background-graphic";
 
 // Router component - Handles conditional routing based on domain/path
 function Router() {
@@ -33,13 +32,14 @@ function Router() {
     );
   }
 
-  // Render public routes for main site
+  // Render public routes
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/favorites" component={Favorites} />
       <Route path="/blog" component={Blog} />
       <Route path="/story" component={Story} />
+      <Route path="/blog/:slug" component={Story} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -49,31 +49,35 @@ function Router() {
 function App() {
   // Check if we're on admin subdomain
   const isAdminDomain = window.location.host.startsWith('admin.');
+  
+  // Check if we're on a content page (not home)
+  const isContentPage = window.location.pathname !== "/" && window.location.pathname !== "";
 
   return (
-    <ThemeProvider>
-      <div className="min-h-screen bg-background relative">
-        {/* Background graphic with explicit z-index */}
-        <div className="absolute inset-0 z-0">
-          <BackgroundGraphic />
-        </div>
-        
-        {/* Theme toggle positioning will now work */}
-        <div className="fixed bottom-4 right-4 z-50 flex items-center">
-          <div className="mr-4 text-sm text-muted-foreground">
-            Made with ❤️ by a non-technical primate with <a href="/favorites#tools" className="underline">AI tools</a>.
+    <ThemeProvider defaultTheme="dark">
+      <div className="min-h-screen bg-black">
+        {/* Background graphic for home page */}
+        {!isContentPage && (
+          <div className="fixed inset-0 -z-10">
+            <BackgroundGraphic />
           </div>
-          <ThemeToggle />
-        </div>
+        )}
         
-        {/* Main content above background */}
+        {/* Main content */}
         <QueryClientProvider client={queryClient}>
-          <main className="container relative z-10">
+          <main className="relative">
             {!isAdminDomain && <ProfileMenu />}
             <Router />
           </main>
           <Toaster />
         </QueryClientProvider>
+        
+        {/* Footer */}
+        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center">
+          <div className="text-sm text-gray-500">
+            Made with ❤️ by a non-technical primate with <a href="/favorites#tools" className="underline">AI tools</a>.
+          </div>
+        </div>
       </div>
     </ThemeProvider>
   );
